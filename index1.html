@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script type="text/javascript" src="jquery-1.3.2.min.js"></script>
+
+	<script type="text/javascript" src="TreeGrid.js"></script>
+
+	<link type="text/css" rel="stylesheet" href="TreeGrid.css"/>
+</head>
+<body>
+	<div id="div1"></div>
+
+	<script language="javascript">
+
+		var config = {
+
+			id: "tg1",
+
+			width: "800",
+
+			renderTo: "div1",
+
+			headerAlign: "left",
+
+			headerHeight: "30",
+
+			dataAlign: "left",
+
+			indentation: "20",
+
+			folderOpenIcon: "images/2.jpg",
+
+			folderCloseIcon: "images/1.jpg",
+
+			hoverRowBackground: "false",
+
+			folderColumnIndex: "1",
+
+			itemClick: "itemClickEvent",
+
+			columns:[
+
+				{headerText: "选择", headerAlign: "center", dataAlign: "center", width: "40", handler: "customCheckBox"},
+
+				{headerText: "单位", dataField: "name", headerAlign: "center", handler: "customOrgName"},
+
+				{headerText: "本人参与", dataField: "code", headerAlign: "center", dataAlign: "center", width: "100"},
+
+				{headerText: "指派人数", headerAlign: "center", dataAlign: "center", width: "100", handler: "customLook"}
+			],
+
+			data:[
+
+				{name: "省厅", code: "", assignee: "", children:[
+
+					{name: "网安总队",children:[
+
+						{name: "总队办公室",children:[
+							{name:"主任"},
+							{name:"张三"}
+
+						]},
+						{name: "安管支队",children:[
+							{name:"队长"},
+							{name:"副队长"},
+							{name:"李四"}
+
+						]},
+						{name: "网侦支队",children:[
+							{name:"队长"},
+							{name:"副队长"},
+							{name:"李四"}
+
+						]},	
+					]},
+					{name: "武汉市局",children:[
+
+						{name: "安保支队",children:[
+							{name:"队长"},
+							{name:"赵六"}
+
+						]},
+						{name: "江岸分局",children:[
+							{name:"派出所1",children:[
+								{name:"A所长"},
+								{name:"A警员"}
+
+							]},
+							{name:"禁毒大队"},
+							{name:"派出所2",children:[
+								{name:"B所长"},
+								{name:"B警员"}
+
+							]}
+
+						]}
+							
+					]}
+		
+				]}
+			]
+
+		};
+
+		/*
+
+			单击数据行后触发该事件
+
+			id：行的id
+
+			index：行的索引。
+
+			data：json格式的行数据对象。
+
+		*/
+
+		function itemClickEvent(id, index, data){
+
+			jQuery("#currentRow").val(id + ", " + index + ", " + TreeGrid.json2str(data));
+
+		}
+
+		/*
+
+			通过指定的方法来自定义栏数据
+
+		*/
+	
+		function customCheckBox(row, col){
+
+			return "<input type='checkbox'>";
+
+		}
+
+		function customOrgName(row, col){
+
+			var name = row[col.dataField] || "";
+
+			return name;
+
+		}
+
+		function customLook(row, col){
+
+			return "<input type='text'>";
+
+		}
+
+		//创建一个组件对象
+
+		var treeGrid = new TreeGrid(config);
+
+		treeGrid.show();
+
+	
+		/*
+
+			展开、关闭所有节点。
+
+			isOpen=Y表示展开，isOpen=N表示关闭
+
+		*/
+
+		function expandAll(isOpen){
+
+			treeGrid.expandAll(isOpen);
+
+		}
+
+	
+		/*
+
+			取得当前选中的行，方法返回TreeGridItem对象
+
+		*/
+
+		function selectedItem(){
+
+			var treeGridItem = treeGrid.getSelectedItem();
+
+			if(treeGridItem!=null){
+
+				//获取数据行属性值
+
+				//alert(treeGridItem.id + ", " + treeGridItem.index + ", " + treeGridItem.data.name);
+
+				//获取父数据行
+
+				var parent = treeGridItem.getParent();
+
+				if(parent!=null){
+
+					//jQuery("#currentRow").val(parent.data.name);
+
+				}
+
+				//获取子数据行集
+
+				var children = treeGridItem.getChildren();
+
+				if(children!=null && children.length>0){
+
+					jQuery("#currentRow").val(children[0].data.name);
+
+				}
+
+			}
+
+		}
+
+	
+	
+	</script>
+</body>
+</html>
